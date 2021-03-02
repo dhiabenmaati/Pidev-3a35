@@ -1,0 +1,28 @@
+<h1>Clubs</h1>
+<br><a href="club_add"><Button>Add</Button></a>
+<br><br><br><br>
+<table border="1">
+    <tr>
+        <th>
+            REF
+        </th>
+        <th>
+            Creation date
+        </th>
+    </tr>
+    {% for club in clubs %}
+        <tr>
+            <td>
+                {{ club.ref }}
+            </td>
+            <td>
+                {{ club.creationDate }}
+            </td>
+            <td>
+                <a href="/club_update/{{ club.ref }}"><button>Update</button></a>
+                <a href="/club_delete/{{ club.ref }}"><button>Delete</button></a>
+
+            </td>
+        </tr>
+    {% endfor %}
+</table>
