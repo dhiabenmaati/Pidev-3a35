@@ -40,7 +40,7 @@
 	                    </td>
                         <td class="text-right"> 
                             <a data-original-title="Save to Wishlist" title="" href="" class="btn btn-info" data-toggle="tooltip"><i class="fa fa-heart"></i></a> 
-                            <a href="{{ path('panier_remove', {'id' : item.produit.id}) }}" class="btn btn-danger"> Remove</a>
+                            <a href="{{ path('panier_remove', {'id' : item.produit.id}) }}" class="btn btn-danger"> Supprimer</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -72,21 +72,21 @@
         <div class="card-body">
             <dl class="dlist-align">
                 <dt>Total price:</dt>
-                <dd class="text-right">$69.97</dd>
+                <dd class="text-right">{{ total }} DT</dd>
             </dl>
             <dl class="dlist-align">
                 <dt>Discount:</dt>
-                <dd class="text-right text-danger">- $10.00</dd>
+                <dd class="text-right text-danger">-0.00 DT</dd>
             </dl>
             <dl class="dlist-align">
                 <dt>Total:</dt>
-                <dd class="text-right text-dark b"><strong>$59.97</strong></dd>
+                <dd class="text-right text-dark b"><strong>{{ total }} DT</strong></dd>
             </dl>
             <hr>
             <p class="text-center mb-3">
                 <img src="../images/misc/payments.png" height="26">
             </p>
-            <a href="{{ path('commande_add') }}" class="btn btn-primary btn-block"> Make Purchase </a>
+            <a href="{{ path('commande_add') }}" class="btn btn-primary btn-block"> Commander </a>
             <a href="/" class="btn btn-light btn-block">Continue Shopping</a>
         </div> <!-- card-body.// -->
     </div> <!-- card.// -->

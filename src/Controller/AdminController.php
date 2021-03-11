@@ -179,8 +179,8 @@ class AdminController extends AbstractController
     public function supprimer_liv($id) {
         $em = $this->getDoctrine()->getManager();
         $cmd = $em->getRepository(Livreur::class)->find($id);
-        $entityManager->remove($cmd);
-        $entityManager->flush();
+        $em->remove($cmd);
+        $em->flush();
         $this->addFlash(
             'info',
             'Livreur supprimé avec succée !'
