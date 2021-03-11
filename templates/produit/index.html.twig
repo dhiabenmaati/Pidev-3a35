@@ -1,0 +1,23 @@
+{% extends 'BaseFrontOffice.html.twig' %}
+
+{% block content %}
+<h3 classe="breadcrumb-header">Produits</h3>
+
+<div class="row">
+    {% for produit in produits %}
+        <div class="col-md-4">
+            <div class="card mb-4">
+                <img src="https://via.placeholder.com/200x150" alt="{{ produit.nomprod }}" class="card-img-top">
+                <div class="card-body">
+                    <h5 class="card-title">{{ produit.nomprod }}</h5>
+                    <p class="card-text">{{ produit.descprod }}</p>
+                    <div class="d-flex justify-content-between align-item-center">
+                        <a href="{{ path('panier_add',{'id' : produit.id}) }}" class="btn btn-success">Ajouter au panier</a>
+                        <span class="h5 mt-auto">{{ produit.prixprod }} TND</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+{% endblock %}

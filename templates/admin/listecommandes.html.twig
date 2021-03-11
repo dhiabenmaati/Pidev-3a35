@@ -1,0 +1,57 @@
+{% extends 'BaseBackOffice.html.twig' %}
+
+{% block content %}
+    <div class="container">
+    {% for msg in app.flashes('info') %}
+    <div class="alert alert-success my-2" role="alert">
+        {{ msg }}
+    </div>
+    {% endfor %}
+    <table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID Commande</th>
+            <th scope="col">ID Utilisateur</th>
+            <th scope="col">Date Creation</th>
+            <th scope="col">Date Expédiré</th>
+            <th scope="col">ID Livreur</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for commande in commandes %}
+        <tr>
+            <th scope="row">{{ commande.id }}</th>
+            <th scope="row">-</th>
+            <th scope="row">{{ commande.datecreer|date('d/m/Y') }}</th>
+            {% if commande.dateexpedirer == NULL %}
+                <th scope="row">-</th>
+            {% else %}
+                <th scope="row">{{ commande.expedirer|date('d/m/Y') }}</th>
+            {% endif %}
+            {% if commande.livreur == NULL %}
+                <th scope="row">-</th>
+            {% else %}
+                <th scope="row">{{ commande.livreur.id }}</th>
+            {% endif %}
+            <th scope="row">
+            {% if commande.status == 0 %}
+                En cours de réparation
+            {% elseif commande.status == 1 %}
+                En cours de laivrison
+            {% else %}
+                Livré
+            {% endif %}
+            </th>
+            <th scope="row">
+                <a href="{{ path('detail_commande', { id : commande.id }) }}" class="btn btn-info btn-sm">Détail</a>
+                <a href="{{ path('modifier_commande', { id : commande.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
+                <a href="{{ path('supprimer_commande', { id : commande.id }) }}" class="btn btn-danger btn-sm">Supprimer</a>
+            </th>
+        </tr>
+  {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends 'BaseBackOffice.html.twig' %}
+
+{% block content %}
+    <table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Produit</th>
+            <th scope="col">Quantité</th>
+            <th scope="col">Prix Unitaire</th>
+            <th scope="col">Prix Total</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for detailCmd in detailCmds %}
+        <tr>
+            <td>{{ detailCmd.produit.nomprod }}</td>
+            <td>{{ detailCmd.qte }}</td>
+            <td>{{ detailCmd.produit.prixprod }}</td>
+            <td>{{ detailCmd.qte * detailCmd.produit.prixprod }}</td>
+        </tr>
+  {% endfor %}
+        <tr>
+            <td colspan="3"></td>
+            <th scope="row">Prix Total : {{ total }}</th>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

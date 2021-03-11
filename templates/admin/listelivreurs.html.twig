@@ -1,0 +1,38 @@
+{% extends 'BaseBackOffice.html.twig' %}
+
+{% block content %}
+    <div class="container">
+    {% for msg in app.flashes('info') %}
+    <div class="alert alert-success my-2" role="alert">
+        {{ msg }}
+    </div>
+    {% endfor %}
+    <table class="table">
+    <thead>
+        <tr>
+            <th scope="col">ID Livreur</th>
+            <th scope="col">Nom Livreur</th>
+            <th scope="col">Prenom Livreur</th>
+            <th scope="col">Email Livreur</th>
+            <th scope="col">Num Tel</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for liv in livreurs %}
+        <tr>
+            <th scope="row">{{ liv.id }}</th>
+            <td>{{ liv.nomlivreur }}</td>
+            <td>{{ liv.prenomlivreur }}</td>
+            <td>{{ liv.emaillivreur }}</td>
+            <td>{{ liv.numlivreur }}</td>
+            <th scope="row">
+                <a href="{{ path('modifier_livreur', {id : liv.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
+                <a href="{{ path('supprimer_livreur', {id : liv.id }) }}" class="btn btn-danger btn-sm">Supprimer</a>
+            </th>
+        </tr>
+  {% endfor %}
+    </tbody>
+</table>
+</div>
+{% endblock %}
