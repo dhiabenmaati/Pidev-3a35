@@ -1,0 +1,33 @@
+{% extends 'BaseBackOffice.html.twig' %}
+{% block content %}
+
+    <!-- SECTION -->
+    <div class="section">
+        <!-- container -->
+        <div class="container">
+            <!-- row -->
+            <div class="row">
+
+                <div class="col-md-7">
+                    <!-- Billing Details -->
+                    <div class="billing-details">
+                        {{ form_start(f,{'attr': {'novalidate': 'novalidate'}} ) }}
+                        <div class="form-group">
+                            {{ form_errors(f.desc_reponse_rec) }}
+                            {{ form_label(f.desc_reponse_rec,"desc_reponse_rec") }}
+                            {{ form_widget(f.desc_reponse_rec) }}
+                        </div>
+
+                        {{ form_end(f) }}
+
+                    </div>
+                </div>
+
+            </div>
+            <!-- /row -->
+        </div>
+        <!-- /container -->
+    </div>
+    <!-- /SECTION -->
+
+{% endblock %}
