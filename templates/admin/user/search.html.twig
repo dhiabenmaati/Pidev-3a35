@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form method="post">
+    <input type="text" name="email">
+    <input type="submit" value="recherche">
+</form>
+<table class="table table-light mb-0">
+    <thead>
+    <tr>
+        <th>Id</th>
+        <th>email</th>
+        <th>Roles</th>
+        <th>name</th>
+        <th>surname</th>
+        <th>image</th>
+        <th>status</th>
+
+        <th>actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for user in users %}
+    <tr>
+        <td>{{ user.id }}</td>
+        <td>{{ user.email }}</td>
+        <td>{{ user.roles ? user.roles|json_encode : '' }}</td>
+        <td>{{ user.name }}</td>
+        <td>{{ user.surname }}</td>
+        <td>{{ user.image }}</td>
+        <td>{{ user.status }}</td>
+    </tr>
+    {% else %}
+    <tr>
+        <td colspan="10">no records found</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+</body>
+</html>

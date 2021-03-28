@@ -1,0 +1,42 @@
+{% extends 'adminbase.html.twig' %}
+{% block title %}Creating a New User{% endblock %}
+{% block body %}
+	<div class="app-container">
+		<!-- begin app-nabar -->
+
+		<!-- end app-navbar -->
+		<!-- begin app-main -->
+			<div
+			class="app-main" id="main"> <!-- begin container-fluid -->
+			<div
+				class="container-fluid">
+				<!-- begin row -->
+				<div class="row">
+					<div
+						class="col-md-12 m-b-30">
+					</div>
+
+				</div>
+				<!-- end row -->
+
+				<!--start contact contant-->
+
+
+				<h1 style="text-align: center">Create New User</h1>
+    {{ include('admin/user/_form.html.twig') }}
+					<br>
+
+				<div style="text-align: center;">
+    <a class="btn btn-dark" href="{{ path('admin_user_index') }}">back to list</a>
+				</div>
+
+				
+
+				<!--end contact contant-->
+			</div>
+			<!-- end container-fluid -->
+		</div>
+		<!-- end app-main -->
+	</div>
+{% endblock %}
+
