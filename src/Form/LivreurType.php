@@ -2,31 +2,70 @@
 
 namespace App\Form;
 
-use App\Entity\Livreur;
+use App\Entity\Admin\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\TextType;
-use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\CallbackTransformer;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Validator\Constraints\File;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
+
 
 class LivreurType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('nom_livreur')
-            ->add('prenom_livreur')
-            ->add('email_livreur')
-            ->add('mdp_livreur', PasswordType::class)
-            ->add('num_livreur')
+        ->add('email')
+
+        ->add('password', PasswordType::class, [
+            // instead of being set onto the object directly,
+            // this is read and encoded in the controller
+            'mapped' => false,
+            'constraints' => [
+                new NotBlank([
+                    'message' => 'Please enter a password',
+                ]),
+                new Length([
+                    'min' => 6,
+                    'minMessage' => 'Your password should be at least {{ limit }} characters',
+                    // max length allowed by Symfony for security reasons
+                    'max' => 4096,
+                ]),
+            ],
+        ])
+        ->add('name')
+        ->add('surname')
+        ->add('num_tel')
+        ->add('roles', ChoiceType::class, [
+            'choices' => [
+                'Livreur' => 'ROLE_LIVREUR',
+            ]
+        ])
         ;
+
+    //roles field data transformer
+    $builder->get('roles')
+        ->addModelTransformer(new CallbackTransformer(
+            function ($rolesArray) {
+                // transform the array to a string
+                return count($rolesArray) ? $rolesArray[0] : null;
+            },
+            function ($rolesString) {
+                // transform the string back to an array
+                return [$rolesString];
+            }
+        ));
     }
 
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => Livreur::class,
+            'data_class' => User::class,
         ]);
     }
 }

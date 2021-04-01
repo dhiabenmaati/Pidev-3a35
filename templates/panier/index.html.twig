@@ -40,7 +40,7 @@
 	                    </td>
                         <td class="text-right"> 
                             <a data-original-title="Save to Wishlist" title="" href="" class="btn btn-info" data-toggle="tooltip"><i class="fa fa-heart"></i></a> 
-                            <a href="{{ path('panier_remove', {'id' : item.produit.id}) }}" class="btn btn-danger"> Supprimer</a>
+                            <a href="{{ path('panier_remove', {'id' : item.produit.id}) }}" class="btn btn-danger" id="panier-delete"> Supprimer</a>
                         </td>
                     </tr>
                     {% endfor %}
@@ -92,5 +92,28 @@
     </div> <!-- card.// -->
 </aside> <!-- col.// -->
 </div> <!-- row.// -->
+{% endblock %}
+
+
+{% block javascript %}
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        
+        function onClickDeleteFromCart(event) {
+            event.preventDefault();
+            const url = this.href;
+            const panierCount = document.querySelector('#panier-count');
+            
+            axios.get(url).then(function(response){
+                panierCount.textContent = response.data.count;
+                console.log(response.data.count);
+            });
+        }
+
+        document.querySelectorAll('#panier-delete').forEach(function(link){
+            link.addEventListener('click', onClickDeleteFromCart)
+        })
+
+    </script>
 
 {% endblock %}

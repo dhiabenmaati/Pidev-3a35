@@ -1,0 +1,47 @@
+{% extends 'adminbase.html.twig' %}
+{% block title %}User List{% endblock %}
+{% block body %}
+    {% for msg in app.flashes('info') %}
+    <div class="alert alert-success my-2" role="alert">
+        {{ msg }}
+    </div>
+    {% endfor %}
+    <div class="app-container">
+		<!-- begin app-nabar -->
+
+		<!-- end app-navbar -->
+		<!-- begin app-main -->
+			<div
+			class="app-main" id="main"> <!-- begin container-fluid -->
+			<div
+				class="container-fluid">
+				<!-- begin row -->
+				<div class="row">
+					<div
+						class="col-md-12 m-b-30">
+
+
+					</div>
+
+				</div>
+				<!-- end row -->
+
+				<!--start contact contant-->
+				<h1 style="text-align: center">Les livreurs</h1>
+				<div class="row">
+					
+                </div>
+                <div class="card mx-auto" style="width:50%;" >
+                <h5 class="card-header">Modifier un livreur</h5>
+                <div class="card-body">
+                    {% form_theme form 'bootstrap_4_layout.html.twig' %}
+                    {{ form(form) }}
+                </div>
+                </div>
+				<!--end contact contant-->
+			</div>
+			<!-- end container-fluid -->
+		</div>
+		<!-- end app-main -->
+	</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends 'adminbase.html.twig' %}
+{% block title %}Admin Panel!{% endblock %}
+{% block body %}
+    <div class="app-container">
+		<!-- begin app-nabar -->
+
+		<!-- end app-navbar -->
+		<!-- begin app-main -->
+        <div
+        class="app-main" id="main"> <!-- begin container-fluid -->
+        <div
+            class="container-fluid">
+            <!-- begin row -->
+            <div class="row">
+                <div
+                    class="col-md-12 m-b-30">
+                </div>
+            </div>
+            <!-- end row -->
+
+            <!--start contact contant-->
+            <h1 style="text-align: center">Detail de la commande</h1>
+            
+    <table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Produit</th>
+            <th scope="col">Quantité</th>
+            <th scope="col">Prix Unitaire</th>
+            <th scope="col">Prix Total</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for detailCmd in detailCmds %}
+        <tr>
+            <td>{{ detailCmd.produit.nomprod }}</td>
+            <td>{{ detailCmd.qte }}</td>
+            <td>{{ detailCmd.produit.prixprod }}</td>
+            <td>{{ detailCmd.qte * detailCmd.produit.prixprod }}</td>
+        </tr>
+  {% endfor %}
+        <tr>
+            <td colspan="3"></td>
+            <th scope="row">Prix Total : {{ total }}</th>
+        </tr>
+    </tbody>
+</table>
+</div>
+{% endblock %}

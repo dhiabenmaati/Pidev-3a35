@@ -1,0 +1,50 @@
+{% extends 'BaseBackOffice.html.twig' %}
+
+{% block content %}
+	<div style="width: 90%;" class="mx-5 my-2">
+    <div class="card" style="width: 100%">
+    <h5 class="card-header">Information sur le client</h5>
+    <div class="card-body">
+    <dl class="row">
+        <dt class="col-sm-2">Client</dt>
+        <dd class="col-sm-10">{{ user.name }} {{ user.surname }}</dd>
+        <dt class="col-sm-2">Adresse</dt>
+        <dd class="col-sm-10">{{ adresse.adresse }}</dd>
+        <dt class="col-sm-2">Ville</dt>
+        <dd class="col-sm-10">{{ adresse.ville }}</dd>
+        <dt class="col-sm-2">Code Postal</dt>
+        <dd class="col-sm-10">{{ adresse.codepostal }}</dd>
+        <dt class="col-sm-2">Numéro Téléphone</dt>
+        <dd class="col-sm-10">{{ adresse.numtel }}</dd>
+    </dl>
+</div>
+   <table class="table">
+    <thead>
+        <tr>
+            <th scope="col">Produit</th>
+            <th scope="col">Quantité</th>
+            <th scope="col">Prix Unitaire</th>
+            <th scope="col">Prix Total</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for detailCmd in detailCmds %}
+        <tr>
+            <td>{{ detailCmd.produit.nomprod }}</td>
+            <td>{{ detailCmd.qte }}</td>
+            <td>{{ detailCmd.produit.prixprod }}</td>
+            <td>{{ detailCmd.qte * detailCmd.produit.prixprod }}</td>
+        </tr>
+  {% endfor %}
+        <tr>
+            <td colspan="3"></td>
+            <th scope="row">Prix Total : {{ total }}</th>
+        </tr>
+    </tbody>
+</table>
+
+
+
+</div>
+</div>
+{% endblock %}

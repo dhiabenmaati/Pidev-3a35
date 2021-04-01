@@ -1,0 +1,222 @@
+{% extends 'adminbase.html.twig' %}
+{% block title %}Liste des commandes{% endblock %}
+{% block body %}
+    <div class="app-container">
+		<!-- begin app-nabar -->
+		<!-- end app-navbar -->
+		<!-- begin app-main -->
+			<div
+			class="app-main" id="main"> <!-- begin container-fluid -->
+			<div
+				class="container-fluid">
+				<!-- begin row -->
+				<div class="row">
+					<div
+						class="col-md-12 m-b-30">
+					</div>
+				</div>
+				<!-- end row -->
+				<!--start contact contant-->
+				<h1 style="text-align: center">Les commandes</h1>
+				<div class="row">
+
+					<div style="margin: auto; width: 50%; border: 2px ; padding: 10px;">
+					<form id="form" method="POST" action="{{ path('recherche_commande') }}">
+						<input type="text" name="id_cmd" id="id_cmd" style="width: 100%;">
+						<div style="margin: auto; width: 50%; padding: 10px; text-align: center;">
+						    <input class="btn btn-primary" type="submit" value="recherche">
+                            <a class="btn btn-success mt-1" id="loadcommande" href = "#">Afficher tous les commandes</a>  
+                            <a class="btn btn-dark mt-1" id="loadcommandenonlivrer" href = "#">Afficher les commandes non livrés</a>  
+
+                        
+                        </div>
+					</form>
+                    <!-- Error messages -->
+                    {% for msg in app.flashes('error') %}
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{ msg }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    {% endfor %}
+                    <!-- END Error messages-->
+
+                    <!-- Success messages -->
+                    {% for msg in app.flashes('info') %}
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        {{ msg }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                    </div>
+                    {% endfor %}
+                    <!-- END Success messages-->
+					</div>
+
+<table class="table" id="table_id">
+    <thead>
+        <tr>
+            <th scope="col">ID Commande</th>
+            <th scope="col">ID Utilisateur</th>
+            <th scope="col">Date Creation</th>
+            <th scope="col">Date Expédiré</th>
+            <th scope="col">ID Livreur</th>
+            <th scope="col">Status</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody id="commande">
+        {% for commande in commandes %}
+        <tr>
+            <th scope="row">{{ commande.id }}</th>
+            <th scope="row">{{ commande.user.id }}</th>
+            <th scope="row">{{ commande.datecreer|date('d/m/Y') }}</th>
+            {% if commande.dateexpedirer == NULL %}
+                <th scope="row">-</th>
+            {% else %}
+                <th scope="row">{{ commande.dateexpedirer|date('d/m/Y') }}</th>
+            {% endif %}
+            {% if commande.livreur == NULL %}
+                <th scope="row">-</th>
+            {% else %}
+                <th scope="row">{{ commande.livreur.id }}</th>
+            {% endif %}
+            <th scope="row">
+            {% if commande.status == 0 %}
+                En cours de réparation
+            {% elseif commande.status == 1 %}
+                En cours de laivrison
+            {% else %}
+                Livré
+            {% endif %}
+            </th>
+            <th scope="row">
+                <a href="{{ path('detail_commande', { id : commande.id }) }}" class="btn btn-info btn-sm">Détail</a>
+                <a href="{{ path('modifier_commande', { id : commande.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
+                <a href="{{ path('supprimer_commande', { id : commande.id }) }}" class="btn btn-danger btn-sm" onclick="return confirm('Veuillez vous vraiment supprimer cette commande ?');">Supprimer</a>
+            </th>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+		    </div>
+		    <!--end contact contant-->
+		</div>
+		<!-- end container-fluid -->
+	</div>
+	<!-- end app-main -->
+</div>
+
+{% endblock %}
+
+
+{% block javascripts %} 
+    <script language = "javascript" src = "https://code.jquery.com/jquery-2.2.4.min.js"></script> 
+    <script language = "javascript">  
+        $(document).ready(function(response){   
+            $("#form").submit(function(event, id_cmd) {  
+                var id_cmd = $("#id_cmd").val();
+                event.preventDefault();
+                $.ajax({  
+                url:        '{{ path("recherche_commande") }}',  
+                dataType:   'json',  
+                method:     'POST', 
+                data: {
+                    id: $('#id_cmd').val()
+                },
+                async:      true,  
+                success: function(data, status) { 
+                        $('#commande').html('');
+                        msg = "'Veuillez vous vraiment supprimer cette commande ?'";
+                        var e = $('<tr><th scope="row" id="id"></th><th scope="row" id="user"></th><th id="datacreer" scope="row"></th><th id="dateexpedirer" scope="row"></th><th scope="row" id="livreur"></th><th scope="row" id="status"></th><th scope="row"><a href="/admin/commande/'+id_cmd+'" class="btn btn-info btn-sm mr-1">Détail</a><a href="/admin/commande/modifier/'+id_cmd+'" class="btn btn-warning btn-sm mr-1">Modifier</a><a id="supprimer" href="/admin/commande/supprimer/'+id_cmd+'" class="btn btn-danger btn-sm" onclick="return confirm('+msg+');">Supprimer</a></th></tr>');
+                        $('#id', e).html(data.id);  
+                        $('#user', e).html(data.user);  
+                        $('#datacreer', e).html(new Date(data.date_creer.date).toLocaleDateString()); 
+                        $('#dateexpedirer', e).html(data.date_expedirer === null ? '-' : new Date(data.date_creer.date).toLocaleDateString());
+                        $('#livreur', e).html(data.livreur === null ? '-' : data.livreur);  
+                        $('#status', e).html(!data.status ? 'En cours de réparation' : (data.status == 1 ? 'En cours de laivrison' : 'Livrée'));  
+                        $('#commande').append(e);
+                },  
+                error : function(xhr, textStatus, errorThrown) {  
+                    alert('Ajax request failed.');  
+                    console.log(errorThrown);
+                }  
+                });  
+            });  
+        });  
+    </script> 
+
+    <script language = "javascript">  
+      $(document).ready(function(){   
+         $("#loadcommande").on("click", function(event){  
+            $.ajax({  
+               url:        '{{ path("gestion_commande") }}',  
+               type:       'POST',   
+               dataType:   'json',  
+               async:      true,  
+               
+               success: function(data, status) {  
+                  $('#commande').html('');                    
+                  console.log(data[0]);
+                  for(i = 0; i < data.length; i++) {
+                        commande = data[i];  
+                        id_cmd = commande.id;
+                        msg = "'Veuillez vous vraiment supprimer cette commande ?'";
+                        var e = $('<tr><th scope="row" id="id"></th><th scope="row" id="user"></th><th id="datacreer" scope="row"></th><th id="dateexpedirer" scope="row"></th><th scope="row" id="livreur"></th><th scope="row" id="status"></th><th scope="row"><a href="/admin/commande/'+id_cmd+'" class="btn btn-info btn-sm mr-1">Détail</a><a href="/admin/commande/modifier/'+id_cmd+'" class="btn btn-warning btn-sm mr-1">Modifier</a><a id="supprimer" href="/admin/commande/supprimer/'+id_cmd+'" class="btn btn-danger btn-sm" onclick="return confirm('+msg+');">Supprimer</a></th></tr>');
+                        $('#id', e).html(commande.id);  
+                        $('#user', e).html(commande.user);  
+                        $('#datacreer', e).html(new Date(commande.date_creer.date).toLocaleDateString()); 
+                        $('#dateexpedirer', e).html(commande.date_expedirer === null ? '-' : new Date(commande.date_creer.date).toLocaleDateString());
+                        $('#livreur', e).html(commande.livreur === null ? '-' : commande.livreur);  
+                        $('#status', e).html(!commande.status ? 'En cours de réparation' : (commande.status == 1 ? 'En cours de laivrison' : 'Livrée')); 
+                        $('#commande').append(e);  
+
+                  }  
+               },  
+               error : function(xhr, textStatus, errorThrown) {  
+                  alert('Ajax request failed.');  
+               }  
+            });  
+         });  
+      });  
+   </script> 
+
+
+   <script language = "javascript">  
+      $(document).ready(function(){   
+         $("#loadcommandenonlivrer").on("click", function(event){  
+            $.ajax({  
+               url:        '{{ path("commande_non_livrer") }}',  
+               type:       'POST',   
+               dataType:   'json',  
+               async:      true,  
+               
+               success: function(data, status) {  
+                  $('#commande').html('');    
+                  console.log(data);
+                  console.log(data[0]);
+                  for(i = 0; i < data.length; i++) {
+                        commande = data[i];  
+                        id_cmd = commande.id;
+                        msg = "'Veuillez vous vraiment supprimer cette commande ?'";
+                        var e = $('<tr><th scope="row" id="id"></th><th scope="row" id="user"></th><th id="datacreer" scope="row"></th><th id="dateexpedirer" scope="row"></th><th scope="row" id="livreur"></th><th scope="row" id="status"></th><th scope="row"><a href="/admin/commande/'+id_cmd+'" class="btn btn-info btn-sm mr-1">Détail</a><a href="/admin/commande/modifier/'+id_cmd+'" class="btn btn-warning btn-sm mr-1">Modifier</a><a id="supprimer" href="/admin/commande/supprimer/'+id_cmd+'" class="btn btn-danger btn-sm" onclick="return confirm('+msg+');">Supprimer</a></th></tr>');
+                        $('#id', e).html(commande.id);  
+                        $('#user', e).html(commande.user);  
+                        $('#datacreer', e).html(new Date(commande.date_creer.date).toLocaleDateString()); 
+                        $('#dateexpedirer', e).html(commande.date_expedirer === null ? '-' : new Date(commande.date_creer.date).toLocaleDateString());
+                        $('#livreur', e).html(commande.livreur === null ? '-' : commande.livreur);  
+                        $('#status', e).html(!commande.status ? 'En cours de réparation' : (commande.status == 1 ? 'En cours de laivrison' : 'Livrée')); 
+                        $('#commande').append(e);  
+
+                  }  
+               },  
+               error : function(xhr, textStatus, errorThrown) {  
+                  alert('Ajax request failed.');  
+               }  
+            });  
+         });  
+      });  
+   </script> 
+{% endblock %}  

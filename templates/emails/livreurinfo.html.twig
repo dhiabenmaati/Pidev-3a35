@@ -1,0 +1,41 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <style>
+        h1 { color: #7c795d; font-family: 'Trocchi', serif; font-size: 30px; font-weight: normal; line-height: 48px; margin: 0; }
+        p { color: #4c4a37; font-family: 'Source Sans Pro', sans-serif; font-size: 20px; line-height: 32px; margin: 0 0 24px; }
+        a { color: #ff6600; font-family: 'Muli', sans-serif; }
+        .text {
+            font-family: Arial, Cursive, sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Bonjour {{ liv.name }} {{ liv.surname }} !</h1>
+    <p>Ci-dessous vous trouvez votre information pour s'authentifier au platforme<p>
+    <table border="0">
+        <tbody>
+            <tr>
+                <td class="text">Votre email : </td>
+                <td class="text">{{ liv.email }}</td>
+            </tr>
+            <tr>
+                <td class="text">Votre passe : </td>
+                <td class="text">{{ pass }}</td>
+            </tr>
+            <tr><td></td><td></td></tr>
+            <tr>
+                <td colspan="2"><a href="#" class="btn btn-info">Se Connecter!</a></td>
+            </tr>
+            <tr><td></td><td></td></tr>
+            <tr>
+                <td></td>
+                <td style="color :#7c795d; font-family: Cursive, Helvetica, sans-serif;">Meilleures salutations, PiArt Team !</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

@@ -2,14 +2,10 @@
 
 namespace App\Controller;
 
-
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use App\Repository\ProduitRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-
 
 class PanierController extends AbstractController
 {
@@ -44,7 +40,14 @@ class PanierController extends AbstractController
         $panier = $session->get('panier', []);
         $panier[$id] = (empty($panier[$id]) ? 1 : $panier[$id] + 1);
         $session->set('panier', $panier);
-        return $this->redirectToRoute("panier_index");
+        $count = 0;
+        foreach($panier as $id => $qte) 
+            $count += $qte;
+        return $this->json([
+            'code' => 200,
+            'message' => 'produit ajoute avec succee au panier',
+            'count' => $count,
+        ], 200);
     }
 
     /**
@@ -52,10 +55,18 @@ class PanierController extends AbstractController
      */
     public function remove($id, SessionInterface $session) {
         $panier = $session->get('panier', []);
-        if(!empty($panier[$id]))
+        if(!empty($panier[$id])) {
             unset($panier[$id]);
+        }
         $session->set('panier', $panier);
-        return $this->redirectToRoute("panier_index");
+        $count = 0;
+        foreach($panier as $id => $qte) 
+            $count += $qte;
+        return $this->json([
+            'code' => 200,
+            'message' => 'produit suprimee avec succee de panier',
+            'count' => $count,
+        ], 200);
     }
 
     /**

@@ -12,7 +12,7 @@
                     <h5 class="card-title">{{ produit.nomprod }}</h5>
                     <p class="card-text">{{ produit.descprod }}</p>
                     <div class="d-flex justify-content-between align-item-center">
-                        <a href="{{ path('panier_add',{'id' : produit.id}) }}" class="btn btn-success">Ajouter au panier</a>
+                        <a href="{{ path('panier_add',{'id' : produit.id}) }}" class="btn btn-success add-product">Ajouter au panier</a>
                         <span class="h5 mt-auto">{{ produit.prixprod }} TND</span>
                     </div>
                 </div>
@@ -20,4 +20,27 @@
         </div>
     {% endfor %}
 </div>
+{% endblock %}
+
+{% block javascript %}
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        
+        function onClickAddToCart(event) {
+            event.preventDefault();
+            const url = this.href;
+            const panierCount = document.querySelector('#panier-count');
+            
+            axios.get(url).then(function(response){
+                panierCount.textContent = response.data.count;
+                console.log(response.data.count);
+            });
+        }
+
+        document.querySelectorAll('a.add-product').forEach(function(link){
+            link.addEventListener('click', onClickAddToCart)
+        })
+
+    </script>
+
 {% endblock %}

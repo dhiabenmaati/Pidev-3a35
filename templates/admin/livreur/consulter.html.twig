@@ -1,0 +1,141 @@
+{% extends 'adminbase.html.twig' %}
+{% block title %}Consultation Livreur{% endblock %}
+{% block body %}
+	<div class="app-container">
+		<!-- begin app-nabar -->
+
+		<!-- end app-navbar -->
+		<!-- begin app-main -->
+			<div
+			class="app-main" id="main"> <!-- begin container-fluid -->
+			<div
+				class="container-fluid">
+				<!-- begin row -->
+				<div class="row">
+					<div
+						class="col-md-12 m-b-30">
+
+
+					</div>
+
+				</div>
+				<!-- end row -->
+
+				<!--start contact contant-->
+				<h1 style="text-align: center">Consulter Livreur</h1>
+				<div class="row">
+
+    {% for msg in app.flashes('error') %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ msg }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    {% endfor %}
+	{% for msg in app.flashes('info') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ msg }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    {% endfor %}
+		</div>
+<div class="card" style="width: 100%">
+    <h5 class="card-header">Information sur le livreur</h5>
+    <div class="card-body">
+    <dl class="row">
+        <dt class="col-sm-2">ID Livreur</dt>
+        <dd class="col-sm-10">{{ liv.id }}</dd>
+        <dt class="col-sm-2">Nom Livreur</dt>
+        <dd class="col-sm-10">{{ liv.name }}</dd>
+        <dt class="col-sm-2">Prenom Livreur</dt>
+        <dd class="col-sm-10">{{ liv.surname }}</dd>
+        <dt class="col-sm-2">Email Livreur</dt>
+        <dd class="col-sm-10">{{ liv.email }}</dd>
+        <dt class="col-sm-2">Numéro Téléphone</dt>
+        <dd class="col-sm-10">{{ liv.numtel }}</dd>
+        <dd class="col-sm-10">
+            <a href="{{ path('modifier_livreur', {id : liv.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
+            <a href="{{ path('supprimer_livreur', {id : liv.id }) }}" class="btn btn-danger btn-sm" onclick="return confirm('Veuillez vous vraiment supprimer ce livreur ?');">Supprimer</a>
+            <a class="btn btn-info btn-sm" id="loadcommande" href = "#">Afficher les commandes</a>  
+        </dd>
+    </dl>
+</div>
+</div>
+    <h1 id="msg" style="text-align: center"></h1>
+    <div class="row">
+    
+    
+    <table class="table" id="table_id">
+        <tbody id="commande">
+            
+        </tbody>
+    </table>
+
+
+    </div>
+
+				</div>
+
+				<!--end contact contant-->
+			</div>
+			<!-- end container-fluid -->
+		</div>
+		<!-- end app-main -->
+	</div>
+{% endblock %}
+
+
+{% block javascripts %}
+
+   <script language = "javascript" src = "https://code.jquery.com/jquery-2.2.4.min.js"></script> 
+   
+   <script language = "javascript">  
+      done = 0;
+      $(document).ready(function(){   
+         $("#loadcommande").on("click", function(event){  
+            $.ajax({  
+               url:        '{{ path("consulter_livreur", {id : liv.id }) }}',  
+               type:       'POST',   
+               dataType:   'json',  
+               async:      true,  
+               
+               success: function(data, status) {  
+                  $('#commande').html('');
+                  if(data.length > 0) {
+                    if(!done) {
+                        var e = '<thead><tr><th scope="col">ID Commande</th><th scope="col">ID Utilisateur</th><th scope="col">Date Creation</th><th scope="col">Date Expédiré</th><th scope="col">ID Livreur</th><th scope="col">Status</th><th scope="col"></th></tr></thead>';
+                        $('#msg').html('Les commandes géré par {{ liv.name }}');
+                        $('#table_id').append(e);
+                        done = 1;
+                    }
+                    for(i = 0; i < data.length; i++) {
+                            commande = data[i];  
+                            var e = $('<tr><th scope="row" id="id"></th><th scope="row" id="user"></th><th id="datacreer" scope="row"></th><th id="dateexpedirer" scope="row"></th><th scope="row" id="livreur"></th><th scope="row" id="status"></th><th scope="row"><a id="detail" href="#" class="btn btn-info btn-sm">Détail</a><a id="modifier" href="#" class="btn btn-warning btn-sm">Modifier</a><a id="supprimer" href="#" class="btn btn-danger btn-sm">Supprimer</a></th></tr>');
+                            $('#id', e).html(commande.id);  
+                            $('#user', e).html(commande.user);  
+                            $('#datacreer', e).html(new Date(commande.date_creer.date).toLocaleDateString()); 
+                            $('#dateexpedirer', e).html(commande.date_expedirer === null ? '-' : new Date(commande.date_creer.date).toLocaleDateString());
+                            $('#livreur', e).html(commande.livreur);  
+                            $('#status', e).html(!commande.status ? 'En cours de réparation' : (commande.status == 1 ? 'En cours de laivrison' : 'Livrée')); 
+                            $('#commande').append(e);  
+                        }  
+                  } else {
+                    if(!done) {
+                        $('#msg').attr('class','text-danger');
+                        $('#msg').html('Pas de commande affecter à ce livreur !');
+                        done = 1;
+                    }
+                  }
+               },  
+               error : function(xhr, textStatus, errorThrown) {  
+                  alert('Ajax request failed.');  
+               }  
+            });  
+         });  
+      });  
+   </script> 
+
+{% endblock %}

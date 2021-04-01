@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Entity\Admin\User;
 use App\Repository\CommandeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -40,9 +41,15 @@ class Commande
     private $detailCommandes;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Livreur::class, inversedBy="commandes")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="commandesalivrer")
      */
     private $livreur;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="commandes")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
 
     public function __construct()
     {
@@ -120,15 +127,26 @@ class Commande
         return $this;
     }
 
-    public function getLivreur(): ?Livreur
+    public function getLivreur(): ?User
     {
         return $this->livreur;
     }
 
-    public function setLivreur(?Livreur $livreur): self
+    public function setLivreur(?User $livreur): self
     {
         $this->livreur = $livreur;
 
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
         return $this;
     }
 

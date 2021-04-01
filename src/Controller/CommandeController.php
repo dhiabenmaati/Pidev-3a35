@@ -2,17 +2,15 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Entity\Adresse;
+use App\Entity\Commande;
+use App\Entity\DetailCommande;
+use App\Repository\ProduitRepository;
+use App\Repository\CommandeRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use App\Repository\ProduitRepository;
-use Symfony\Component\HttpFoundation\Request;
-use App\Entity\Commande;
-use App\Entity\DetailCommande;
-use App\Repository\CommandeRepository;
-use App\Repository\DetailCommandeRepository;
-
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
 class CommandeController extends AbstractController
@@ -22,7 +20,9 @@ class CommandeController extends AbstractController
      */
     public function index(CommandeRepository $CommandeRepository): Response
     {
-        $commandes = $CommandeRepository->findAll();
+        $commandes = $CommandeRepository->findBy([
+            'user' => $this->getUser()
+        ]);
         $cmd_info = [];
         foreach($commandes as $cmd) {
             $cmd_info[] = [
@@ -30,20 +30,28 @@ class CommandeController extends AbstractController
                 'id' => $cmd->getId()
             ];
         }
-       // dd($cmd_info);
         return $this->render('commande/index.html.twig', [
             'cmd_infos' => $cmd_info
         ]);
     }
 
-
     /**
-     * @Route("/commande/add", name="commande_add")
+     * @Route("/commande/ajouter", name="commande_add")
      */
-    public function add(SessionInterface $session, ProduitRepository $ProduitRepository) : Response
+    public function add(SessionInterface $session, ProduitRepository $ProduitRepository, \Swift_Mailer $mailer) : Response
     {
-        $panier = $session->get('panier');
         $entityManager = $this->getDoctrine()->getManager();
+        $user = $entityManager->getRepository(Adresse::class)->findBy([
+            'user' => $this->getUser()
+        ]);
+        if($user == null) {
+            $this->addFlash(
+                'info',
+                "Vous devez donner votre adresse pour l'expédition !"
+            );
+            return $this->redirectToRoute('adresse_add');
+        }
+        $panier = $session->get('panier');
         $panier = $session->get('panier', []);
         $panierWithData = [];
         foreach($panier as $id => $qte) {
@@ -53,11 +61,11 @@ class CommandeController extends AbstractController
             ];
         }
         if(!empty($panierWithData)) {
-            $date = new \DateTime();
             $cmd = new Commande();
             $cmd->setDateCreer(new \DateTime());
             $cmd->setDateExpedirer(NULL);
             $cmd->setStatus(0);
+            $cmd->setUser($this->getUser());
             $entityManager->persist($cmd);
             $entityManager->flush();
             foreach($panierWithData as $item) {
@@ -68,6 +76,30 @@ class CommandeController extends AbstractController
                 $entityManager->persist($cmd_detail);
                 $entityManager->flush();
             }
+            $em = $this->getDoctrine()->getManager();
+            $detailCmds = $em->getRepository(DetailCommande::class)->findBy(
+                ['commande' => $cmd->getId()]
+            );
+
+            $total = 0;
+            foreach($detailCmds as $item)
+              $total += $item->getProduit()->getPrixProd() * $item->getQte();
+
+              $user = $this->getUser();
+              $message = (new \Swift_Message('PiArt'))
+                      ->setFrom('pisquad.piart@gmail.com')
+                      //->setTo($user->getEmail())
+                      ->setTo('aminedahmen14@gmail.com')
+                      ->setBody(
+                          $this->renderView(
+                          'emails/commandeinfo.html.twig',[
+                              'user' => $user,
+                              'detailCmds' => $detailCmds,
+                              'total' => $total
+                          ]),
+                          'text/html'
+                      );
+                 $mailer->send($message);
         }
         return $this->redirectToRoute("commande");
     }

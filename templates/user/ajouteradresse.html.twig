@@ -1,0 +1,21 @@
+{% extends 'BaseBackOffice.html.twig' %}
+
+
+{% block content %}
+<div class="card mx-auto my-auto" style="width:50%;" >
+	{% for msg in app.flashes('info') %}
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ msg }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    {% endfor %}
+
+    <h5 class="card-header">Ajouter une adresse</h5>
+    <div class="card-body">
+        {% form_theme form 'bootstrap_4_layout.html.twig' %}
+        {{ form(form) }}
+    </div>
+</div>
+{% endblock %}

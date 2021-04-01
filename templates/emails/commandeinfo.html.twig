@@ -1,0 +1,46 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+    <style>
+        h1, h3 { color: #7c795d; font-family: 'Trocchi', serif; font-size: 30px; font-weight: normal; line-height: 48px; margin: 0; }
+        p { color: #4c4a37; font-family: 'Source Sans Pro', sans-serif; font-size: 20px; line-height: 32px; margin: 0 0 24px; }
+        a { color: #ff6600; font-family: 'Muli', sans-serif; }
+        .text {
+            font-family: Arial, Cursive, sans-serif;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+<body>
+    <h1>Bonjour {{ user.name }} {{ user.surname }} !</h1>
+    <h3>Votre commande : </h3>
+    <table class="table" width="50%">
+        <thead>
+            <tr>
+                <th class="text-center">Produit</th>
+                <th class="text-center">Quantité</th>
+                <th class="text-center">Prix Unitaire</th>
+                <th class="text-center">Prix Total</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for detailCmd in detailCmds %}
+            <tr>
+                <td class="text-center">{{ detailCmd.produit.nomprod }}</td>
+                <td class="text-center">{{ detailCmd.qte }}</td>
+                <td class="text-center">{{ detailCmd.produit.prixprod }}</td>
+                <td class="text-center">{{ detailCmd.qte * detailCmd.produit.prixprod }}</td>
+            </tr>
+    {% endfor %}
+            <tr>
+                <td colspan="3"></td>
+                <th scope="row">Prix Total : {{ total }}</th>
+            </tr>
+        </tbody>
+    </table>
+    <h4 style="color :#7c795d; font-family: Cursive, Helvetica, sans-serif;">Meilleures salutations, PiArt Team !</h4>
+
+</body>
+</html>

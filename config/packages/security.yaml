@@ -1,14 +1,32 @@
 security:
+    access_denied_url: /
+    encoders:
+        App\Entity\Admin\User:
+            algorithm: auto
+
+
     # https://symfony.com/doc/current/security.html#where-do-users-come-from-user-providers
     providers:
-        users_in_memory: { memory: null }
+        # used to reload user from session & other features (e.g. switch_user)
+        app_user_provider:
+            entity:
+                class: App\Entity\Admin\User
+                property: email
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             anonymous: lazy
-            provider: users_in_memory
+
+            logout:
+                path: app_logout
+                target: login_user
+            guard:
+                authenticators:
+                    - App\Security\AppCustomAuthenticator
+                # where to redirect after logout
+                # target: app_any_route
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -19,5 +37,8 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+        - { path: ^/user, roles: ROLE_USER }
+        - { path: ^/vendor, roles: ROLE_VENDOR }
+        - { path: ^/livreur, roles: ROLE_LIVREUR}
+        - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/commande, roles: IS_AUTHENTICATED_FULLY }

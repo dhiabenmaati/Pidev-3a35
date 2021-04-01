@@ -1,0 +1,15 @@
+{% extends 'VendorBaseBackOffice.html.twig' %}
+{% block title %} Edit User{% endblock %}
+
+{% block content %}
+	<div style="margin: auto; width: 50%; border: 2px solid; padding: 10px;">
+	<table class="table">
+		<tbody>
+			<h3 style="text-align: center">{{ app.user.name }} - Edit</h3>
+		</tbody>
+	</table>
+
+	{{ include('vendor/_form.html.twig', {'button_label': 'Update'}) }}
+
+
+</div><!-- End Shop Page -->{% endblock %}

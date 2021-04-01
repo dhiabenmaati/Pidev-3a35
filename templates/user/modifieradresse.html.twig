@@ -1,0 +1,12 @@
+{% extends 'BaseBackOffice.html.twig' %}
+
+
+{% block content %}
+<div class="card mx-auto" style="width:50%;" >
+    <h5 class="card-header">Modifier une adresse</h5>
+    <div class="card-body">
+        {% form_theme form 'bootstrap_4_layout.html.twig' %}
+        {{ form(form) }}
+    </div>
+</div>
+{% endblock %}

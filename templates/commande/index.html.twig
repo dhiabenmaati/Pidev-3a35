@@ -3,7 +3,7 @@
 {% block title %}Votre Commandes{% endblock %}
 
 {% block content %}
-
+{% if cmd_infos != null %}
 <table class="table">
   <thead>
     <tr>
@@ -40,6 +40,9 @@
     </tr>
   {% endfor %}
   </tbody>
+  {% else %}
+    <h2 class="text-danger text-center">vous n'avez pas encore de commandes</h2>
+  {% endif %}
 </table>
 
 

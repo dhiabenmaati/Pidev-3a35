@@ -19,6 +19,16 @@ class CommandeRepository extends ServiceEntityRepository
         parent::__construct($registry, Commande::class);
     }
 
+    public function findByNotStatus($value)
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.status != :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
     // /**
     //  * @return Commande[] Returns an array of Commande objects
     //  */

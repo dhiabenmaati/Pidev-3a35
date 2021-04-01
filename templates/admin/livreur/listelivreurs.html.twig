@@ -1,0 +1,139 @@
+{% extends 'adminbase.html.twig' %}
+{% block title %}User List{% endblock %}
+{% block body %}
+    <div class="app-container">
+		<!-- begin app-nabar -->
+
+		<!-- end app-navbar -->
+		<!-- begin app-main -->
+			<div
+			class="app-main" id="main"> <!-- begin container-fluid -->
+			<div
+				class="container-fluid">
+				<!-- begin row -->
+				<div class="row">
+					<div class="col-md-12 m-b-30"> </div>
+				</div>
+				<!-- end row -->
+
+				<!--start contact contant-->
+				<h1 style="text-align: center">Les livreurs</h1>
+				<div class="row">
+					<div style="margin: auto; width: 50%; border: 2px ; padding: 10px;">
+						<div style="margin: auto; width: 100%; padding: 10px;">
+                        <!-- form search section -->
+                        <div class="input-group custom-search-form">
+                            <input type="text" id="search" class="form-control" placeholder="Recherche livreur...">
+                            <a class="btn btn-info mx-2"  href="{{ path('ajouter_livreur') }}">Ajouter</a>
+                        </div>
+                        <ul class="list-group" id="items">
+                        </ul>
+                        
+                        <!-- end form search section -->
+					</div>
+    <!-- Error messages -->
+	{% for msg in app.flashes('error') %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ msg }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    {% endfor %}
+    <!-- END Error messages-->
+
+    <!-- Success messages -->
+	{% for msg in app.flashes('info') %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ msg }}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    {% endfor %}
+    <!-- END Success messages-->
+					</div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">ID Livreur</th>
+                <th scope="col">Nom Livreur</th>
+                <th scope="col">Prenom Livreur</th>
+                <th scope="col">Email Livreur</th>
+                <th scope="col">Num Tel</th>
+                <th scope="col"></th>
+            </tr>
+        </thead>
+        <tbody id="livreur">
+        {% for liv in livreurs %}
+            <tr>
+                <th scope="row">{{ liv.id }}</th>
+                <td>{{ liv.surname }}</td>
+                <td>{{ liv.name }}</td>
+                <td>{{ liv.email }}</td>
+                <td>{{ liv.numtel }}</td>
+                <th scope="row">
+                    <a href="{{ path('consulter_livreur', {id : liv.id }) }}" class="btn btn-info btn-sm">Consulter</a>
+                    <a href="{{ path('modifier_livreur', {id : liv.id }) }}" class="btn btn-warning btn-sm">Modifier</a>
+                    <a href="{{ path('supprimer_livreur', {id : liv.id }) }}" class="btn btn-danger btn-sm" onclick="return confirm('Veuillez vous vraiment supprimer ce livreur ?');">Supprimer</a>
+                </th>
+            </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+        </div>
+
+				<!--end contact contant-->
+			</div>
+			<!-- end container-fluid -->
+		</div>
+		<!-- end app-main -->
+	</div>
+{% endblock %}
+
+
+{% block javascripts %} 
+   <script language = "javascript" src = "https://code.jquery.com/jquery-2.2.4.min.js"></script> 
+
+   <!-- Live search with ajax -->
+
+   <script type="text/javascript">
+    jQuery(document).ready(function() {
+        var searchRequest = null;
+        $("#search").keyup(function() {
+            var minlength = 3;
+            var that = this;
+            var value = $(this).val();
+            var entitySelector = $("#items").html('');
+            if (value.length >= minlength ) {
+                if (searchRequest != null)
+                    searchRequest.abort();
+                searchRequest = $.ajax({
+                    type: "GET",
+                    url: "{{ path('recherche_livreur') }}",
+                    data: {
+                        'q' : value
+                    },
+                    dataType: "text",
+                    success: function(msg){
+                        
+                        if (value==$(that).val()) {
+                            var result = JSON.parse(msg);
+                            $.each(result, function(key, arr) {
+                                $.each(arr, function(id, value) {
+                                    if (key == 'entities') {
+                                        if (id != 'error') {
+                                            var e = $('<li class="list-group-item"><a href="/admin/livreur/consulter/'+id+'">'+value+'</a></li>');
+                                            $('#items').append(e);
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                     }
+                });
+            }
+        });
+    });
+    </script>
+{% endblock %}  
