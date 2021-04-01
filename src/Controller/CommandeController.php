@@ -88,8 +88,7 @@ class CommandeController extends AbstractController
               $user = $this->getUser();
               $message = (new \Swift_Message('PiArt'))
                       ->setFrom('pisquad.piart@gmail.com')
-                      //->setTo($user->getEmail())
-                      ->setTo('aminedahmen14@gmail.com')
+                      ->setTo($user->getEmail())
                       ->setBody(
                           $this->renderView(
                           'emails/commandeinfo.html.twig',[
