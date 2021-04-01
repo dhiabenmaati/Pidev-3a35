@@ -65,7 +65,7 @@ class LivreurController extends AbstractController
     /**
      * @Route("/livreur/commande/modifier/{id}", name="update_commande")
      */
-    public function update_commande($id, Request $request) {
+    public function update_commande($id, Request $request, \Swift_Mailer $mailer) {
         $em = $this->getDoctrine()->getManager();
         $cmd = $em->getRepository(Commande::class)->find($id);
         $old_status = $cmd->getStatus();
@@ -88,6 +88,26 @@ class LivreurController extends AbstractController
                 'info',
                 'Le status de commande est modifié avec succée !'
             );
+            $user = $cmd->getUser();
+            $detailCmds = $em->getRepository(DetailCommande::class)->findBy([
+                'commande' => $id
+            ]);
+            $total = 0;
+            foreach($detailCmds as $item)
+                $total += $item->getProduit()->getPrixProd() * $item->getQte();
+            $message = (new \Swift_Message('Authentication info'))
+                ->setFrom('pisquad.piart@gmail.com')
+                ->setTo($user->getEmail())
+                ->setBody(
+                    $this->renderView(
+                    'emails/commandeexp.html.twig',[
+                        'user' => $user,
+                        'detailCmds' => $detailCmds,
+                        'total' => $total
+                    ]),
+                    'text/html'
+                );
+                $mailer->send($message);
             return $this->redirectToRoute('livreur_commande');
         }
         return $this->render('livreur/modifiercommande.html.twig', [

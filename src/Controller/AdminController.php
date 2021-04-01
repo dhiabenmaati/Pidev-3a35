@@ -2,15 +2,11 @@
 
 namespace App\Controller;
 
-use App\Form\UserType;
-use App\Entity\Livreur;
 use App\Entity\Commande;
 use App\Form\LivreurType;
 use App\Entity\Admin\User;
-use App\Form\CommandeType;
 use App\Entity\DetailCommande;
 use App\Repository\UserRepository;
-use App\Repository\LivreurRepository;
 use App\Repository\CommandeRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -127,9 +123,10 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/commande/modifier/{id}", name="modifier_commande")
      */
-    public function modifier_cmd($id, UserRepository $userrepo, Request $request) {
+    public function modifier_cmd($id, UserRepository $userrepo) {
         $em = $this->getDoctrine()->getManager();
         $cmd = $em->getRepository(Commande::class)->find($id);
+
         $livs = $userrepo->findByRole('LIVREUR');
         return $this->render('admin/commande/modifiercommande.html.twig', [
             'cmd' => $cmd,
